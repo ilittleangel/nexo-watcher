@@ -1,0 +1,13 @@
+[ELASTIC]
+esnode = http://elasticsearch:9200
+user = user
+pass = pass
+pattern = index-patter
+window_minutes = 5
+
+[LOGGING]
+level = DEBUG
+
+[WATCHER]
+sleep_minutes = 10
+notification_channels = twitter,email,slack
