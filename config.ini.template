@@ -11,3 +11,7 @@ level = DEBUG
 [WATCHER]
 sleep_minutes = 10
 notification_channels = twitter,email,slack
+slack_web_hook = https://hooks.slack.com/services/XXXXXXX/XXXXXXX/xxxxxxx
+slack_channel = general
+kibana = https://kibana:5601
+activate_alarm_good = true

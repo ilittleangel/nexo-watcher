@@ -8,12 +8,12 @@ from settings import BASE_DIR, ES_RANGE_WINDOW, SLEEP_MINUTES
 
 
 def decide(hits):
-    if hits in range(0):
+    if hits == 0:
         return 'very bad'
     elif hits in range(1, 99):
         return 'bad'
     else:
-        pass
+        return 'good'
 
 
 def main():

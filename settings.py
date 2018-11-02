@@ -25,3 +25,7 @@ LOG_LEVEL = config['LOGGING']['level']
 # watcher
 SLEEP_MINUTES = int(config['WATCHER']['sleep_minutes'])
 NOTIFICATION_CHANNELS = config['WATCHER']['notification_channels'].replace(' ', '').split(',')
+SLACK_HOOK = config['WATCHER']['slack_web_hook']
+SLACK_CHANNEL = config['WATCHER']['slack_channel']
+KIBANA = config['WATCHER']['kibana']
+ACTIVATE_ALARM_GOOD = config['WATCHER']['activate_alarm_good']

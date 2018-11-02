@@ -1,7 +1,9 @@
 import logging
+import requests
 import sys
 
 from settings import ES_RANGE_WINDOW, NOTIFICATION_CHANNELS
+from settings import SLACK_HOOK, KIBANA, SLACK_CHANNEL, ACTIVATE_ALARM_GOOD
 
 
 logger = logging.getLogger('watcher')
@@ -17,24 +19,44 @@ def email(msg):
     logger.debug(f"email notification: {msg}")
 
 
-# todo: implement SLACK notifications
-def slack(msg):
-    logger.debug(f"slack notification: {msg}")
+def slack(msg, kind):
+    emoji = {
+        'bad': ":fearful:",
+        'very bad': ":scream:",
+        'good': ":grin:",
+    }
+    payload = {
+        "channel": f"#{SLACK_CHANNEL}",
+        "username": "webhookbot",
+        "icon_emoji": emoji.get(kind),
+        "text": msg
+    }
+    res = requests.post(SLACK_HOOK, json=payload)
+    if res.status_code == 200:
+        logger.info(f"Success Slack notification: {res.text}")
+    else:
+        logger.error(f"Fail notification: {res.text}")
 
 
 def notify(hits, kind):
     switcher = {
-        'bad': f"Something happens: {hits} hits in the las {ES_RANGE_WINDOW} minutes",
-        'very bad': f"Something really bad happens: {hits} hits in the las {ES_RANGE_WINDOW} minutes",
+        'bad': f"Something happens: {hits} hits in the last {ES_RANGE_WINDOW} minutes: <{KIBANA}|click here> for details!",
+        'very bad': f"Something really bad happens: {hits} hits in the last {ES_RANGE_WINDOW} minutes: <{KIBANA}|click here> for details!",
+        'good': f"Everithing is OK: {hits} hits in the last {ES_RANGE_WINDOW} minutes: <{KIBANA}|click here> for details!",
         'twitter': twitter,
         'email': email,
         'slack': slack
     }
-    msg = switcher.get(kind, "Invalid kind of message")
+    msg = switcher.get(kind, "Invalid type of message")
     for channel in NOTIFICATION_CHANNELS:
         try:
             func = switcher.get(channel)
-            func(msg)
+            if ACTIVATE_ALARM_GOOD:
+                func(msg, kind)
+            elif ACTIVATE_ALARM_GOOD and kind in "bad":
+                func(msg, kind)
+            else:
+                pass
         except TypeError:
             logger.error(f"Invalid notification channel: {channel}")
             sys.exit(1)
