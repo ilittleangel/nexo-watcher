@@ -1,7 +1,6 @@
 import logging
 import json
 import requests
-import sys
 from requests.auth import HTTPBasicAuth
 from datetime import datetime
 
@@ -25,16 +24,14 @@ def get_newest_index():
             reverse=True)
 
         logger.debug(f"Indices found with pattern '{ES_PATTERN}': {len(indices)}")
-        logger.debug(f"Last index: {indices[0]}")
+        logger.info(f"Last index: {indices[0]}")
         return indices[0]
 
     except IndexError as ie:
         logger.error(f"Index Not found: {ie}")
-        sys.exit(1)
 
     except requests.exceptions.RequestException as re:
         logger.error(f"Something wrong with get_newest_index(): {re}")
-        sys.exit(1)
 
 
 def search(index, window):
@@ -57,8 +54,6 @@ def search(index, window):
             return hits
         else:
             logger.error(f"Something wrong calling elasticsearch: http_response = {json.dumps(rq.json(), indent=4)}")
-            sys.exit(1)
 
     except requests.exceptions.RequestException as re:
         logger.error(f"Something wrong with search(): {re}")
-        sys.exit(1)
