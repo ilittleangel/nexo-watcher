@@ -42,7 +42,7 @@ def notify(hits, kind):
     switcher = {
         'bad': f"Something happens: {hits} hits in the last {ES_RANGE_WINDOW} minutes: <{KIBANA}|click here> for details!",
         'very bad': f"Something really bad happens: {hits} hits in the last {ES_RANGE_WINDOW} minutes: <{KIBANA}|click here> for details!",
-        'good': f"Everithing is OK: {hits} hits in the last {ES_RANGE_WINDOW} minutes: <{KIBANA}|click here> for details!",
+        'good': f"Everything is OK: {hits} hits in the last {ES_RANGE_WINDOW} minutes: <{KIBANA}|click here> for details!",
         'twitter': twitter,
         'email': email,
         'slack': slack
@@ -51,9 +51,7 @@ def notify(hits, kind):
     for channel in NOTIFICATION_CHANNELS:
         try:
             func = switcher.get(channel)
-            if ACTIVATE_ALARM_GOOD:
-                func(msg, kind)
-            elif ACTIVATE_ALARM_GOOD and kind in "bad":
+            if kind == "bad" or kind == "very bad" or ACTIVATE_ALARM_GOOD:
                 func(msg, kind)
             else:
                 pass
