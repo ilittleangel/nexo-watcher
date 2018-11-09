@@ -15,3 +15,5 @@ slack_web_hook = https://hooks.slack.com/services/XXXXXXX/XXXXXXX/xxxxxxx
 slack_channel = general
 kibana = https://kibana:5601
 activate_alarm_good = no
+max_threshold = 80
+min_threshold = 10

@@ -5,15 +5,16 @@ from utils.elastic import get_newest_index, search
 from utils.logging import init_logging, close_logging
 from utils.notifications import notify
 from settings import BASE_DIR, ES_RANGE_WINDOW, SLEEP_MINUTES
+from settings import MAX_THRESHOLD, MIN_THRESHOLD
 
 
 def decide(hits):
-    if hits == 0:
+    if hits < MIN_THRESHOLD:
         return 'very bad'
-    elif hits in range(1, 99):
-        return 'bad'
-    else:
+    elif hits > MAX_THRESHOLD:
         return 'good'
+    else:
+        return 'bad'
 
 
 def main():

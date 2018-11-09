@@ -31,3 +31,5 @@ SLACK_HOOK = watcher['slack_web_hook']
 SLACK_CHANNEL = watcher['slack_channel']
 KIBANA = watcher['kibana']
 ACTIVATE_ALARM_GOOD = watcher.getboolean('activate_alarm_good', fallback=False)
+MAX_THRESHOLD = watcher.getint('max_threshold', fallback=90)
+MIN_THRESHOLD = watcher.getint('min_threshold', fallback=1)
