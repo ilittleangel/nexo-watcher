@@ -36,8 +36,8 @@ def get_newest_index():
     except IndexError as ie:
         logger.error(f"Index Not found: {ie}")
 
-    except requests.exceptions.RequestException as re:
-        logger.error(f"Something wrong with get_newest_index(): {re}")
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Something wrong with get_newest_index(): {e}")
 
 
 def search(index, window):
@@ -61,5 +61,5 @@ def search(index, window):
         else:
             logger.error(f"Something wrong calling elasticsearch: http_response = {json.dumps(rq.json(), indent=4)}")
 
-    except requests.exceptions.RequestException as re:
-        logger.error(f"Something wrong with search(): {re}")
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Something wrong with search(): {e}")

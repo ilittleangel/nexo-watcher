@@ -33,7 +33,7 @@ def slack(msg, kind):
     }
     res = requests.post(SLACK_HOOK, json=payload)
     if res.status_code == 200:
-        logger.info(f"Success Slack notification: {res.text}")
+        logger.info(f"Success Slack notification: type -> `{kind}`")
     else:
         logger.error(f"Fail notification: {res.text}")
 
