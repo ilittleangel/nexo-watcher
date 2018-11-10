@@ -54,8 +54,7 @@ def notify(hits, kind):
             if kind == "bad" or kind == "very bad" or ACTIVATE_ALARM_GOOD:
                 func(msg, kind)
             else:
-                print(f"{msg} | {kind}")
-                pass
+                logger.info(f"{msg}: type -> `{kind}`")
         except TypeError:
             logger.error(f"Invalid notification channel: {channel}")
             sys.exit(1)
