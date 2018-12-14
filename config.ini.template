@@ -19,6 +19,7 @@ max_threshold = 80
 min_threshold = 10
 
 [API_LOGS]
-host_url = http://localhost:8000
-full_path_error = /api/logs/error?file=/home/user/file.log&nlines=1
-full_path_warning = /api/logs/warning?file=/home/user/file.log&nlines=3
+host_url = http://host:8000
+endpoints = ["/api/logs/error", "/api/logs/warning"]
+file = /home/user/file.log
+n_lines = 3

@@ -5,7 +5,7 @@ import sys
 
 from settings import ES_RANGE_WINDOW, NOTIFICATION_CHANNELS
 from settings import SLACK_HOOK, KIBANA, SLACK_CHANNEL, ACTIVATE_ALARM_GOOD
-from settings import HOST_URL, PATH_ERROR, PATH_WARN
+from settings import HOST, ENDPOINTS, FILE, N_LINES
 
 
 logger = logging.getLogger('watcher')
@@ -46,13 +46,9 @@ def slack(msg, kind):
 
 def api_logs():
     try:
-        rq_errors = requests.get(url=f"{HOST_URL}{PATH_ERROR}")
-        # rq_errors.raise_for_status()
-        errors = json.dumps(rq_errors.json(), indent=4)
-        if not errors:
-            rq_warns = requests.get(url=f"{HOST_URL}{PATH_WARN}")
-            return json.dumps(rq_warns.json(), indent=4)
-        return errors
+        return [json.dumps(requests.get(url=f"{HOST}{endpoint}?file={FILE}&nlines={N_LINES}").json(), indent=4)
+                for endpoint in ENDPOINTS]
+
     except requests.exceptions.RequestException as re:
         logger.error(f"API LOGS FAILED: see trace errors: {re}")
 

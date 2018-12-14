@@ -1,4 +1,5 @@
 import configparser
+import json
 from os.path import dirname, abspath
 
 
@@ -36,6 +37,7 @@ MIN_THRESHOLD = watcher_cfg.getint('min_threshold', fallback=1)
 
 # api logs
 api_cfg = config['API_LOGS']
-HOST_URL = api_cfg['host_url']
-PATH_ERROR = api_cfg['full_path_error']
-PATH_WARN = api_cfg['full_path_warning']
+HOST = api_cfg['host']
+ENDPOINTS = json.loads(api_cfg['endpoints'])
+FILE = api_cfg['file']
+N_LINES = api_cfg['n_lines']
