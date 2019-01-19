@@ -1,6 +1,6 @@
 import configparser
 import json
-from os.path import dirname, abspath
+from os.path import dirname, abspath, expandvars
 
 
 BASE_DIR = dirname(abspath(__file__))
@@ -34,10 +34,13 @@ KIBANA = watcher_cfg['kibana']
 ACTIVATE_ALARM_GOOD = watcher_cfg.getboolean('activate_alarm_good', fallback=False)
 MAX_THRESHOLD = watcher_cfg.getint('max_threshold', fallback=90)
 MIN_THRESHOLD = watcher_cfg.getint('min_threshold', fallback=1)
+PROCESS_TO_REBORN = watcher_cfg['process_to_reborn']
+PROCESS_COMMAND = watcher_cfg['process_command']
 
 # api logs
 api_cfg = config['API_LOGS']
 HOST = api_cfg['host']
 ENDPOINTS = json.loads(api_cfg['endpoints'])
-FILE = api_cfg['file']
+FILE = expandvars(api_cfg['file'])
+FILE_WATCHER = expandvars(api_cfg['file_watcher'])
 N_LINES = api_cfg['n_lines']

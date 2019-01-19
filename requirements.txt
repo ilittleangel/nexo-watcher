@@ -1,3 +1,5 @@
 elasticsearch
 elasticsearch_dsl
 requests
+psutil
+setproctitle
