@@ -27,10 +27,7 @@ def slack(msg, kind):
         'very bad': ":scream:",
         'good': ":grin:",
     }
-    message = f"""
-        {msg}
-        Information about errors: {api_logs()}
-    """
+    message = f"{msg}\nInformation about errors: ```{api_logs()}```"
     payload = {
         "channel": f"#{SLACK_CHANNEL}",
         "username": "webhookbot",
@@ -46,7 +43,7 @@ def slack(msg, kind):
 
 def api_logs():
     try:
-        return [json.dumps(requests.get(url=f"{HOST}{endpoint}?file={FILE}&nlines={N_LINES}").json(), indent=4)
+        return [requests.get(url=f"{HOST}{endpoint}?file={FILE}&nlines={N_LINES}").json()
                 for endpoint in ENDPOINTS]
 
     except requests.exceptions.RequestException as re:
