@@ -21,8 +21,8 @@ process_to_reborn = pipeline.py
 process_command = nohup $HOME/nexo-ewons/bin/run.sh >> $HOME/nohup-ewons.out 2>&1 &
 
 [API_LOGS]
-host_url = http://host:8000
+host = http://host:8000
 endpoints = ["/api/logs/error", "/api/logs/warning"]
 file = $HOME/file.log
-file_watcher = $HOME/watcher.log
+file_watcher = $HOME/nohup-watcher.out
 n_lines = 3
