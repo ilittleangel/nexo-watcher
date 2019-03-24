@@ -25,9 +25,10 @@ def main():
     while True:
         indice = get_newest_index()
         hits = search(indice, ES_RANGE_WINDOW)
-        notify(hits=hits, kind=decide(hits))
-        if decide(hits) == 'very bad':
+        current_condition = decide(hits)
+        if current_condition == 'very bad':
             reborn_process(PROCESS_TO_REBORN, os.path.expandvars(PROCESS_COMMAND))
+        notify(hits=hits, kind=current_condition)
         time.sleep(SLEEP_MINUTES * 60)
 
 
