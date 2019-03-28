@@ -1,11 +1,10 @@
 import logging
 import json
 import requests
-import sys
 
 from settings import ES_RANGE_WINDOW, NOTIFICATION_CHANNELS
-from settings import SLACK_HOOK, KIBANA, SLACK_CHANNEL, ACTIVATE_ALARM_GOOD
-from settings import HOST, ENDPOINTS, FILE, N_LINES, FILE_WATCHER
+from settings import SLACK_HOOK, KIBANA, SLACK_CHANNEL
+from settings import HOST, FILE, N_LINES, FILE_WATCHER
 
 
 logger = logging.getLogger('watcher')
@@ -27,7 +26,7 @@ def slack(msg, kind):
         'very bad': ":scream:",
         'good': ":grin:",
     }
-    logs = "\n".join([f"```{json.dumps(elem, indent=4)}```" for elem in api_logs(kind)])
+    logs = "\n".join([f"```{json.dumps(elem, indent=4)}```" for elem in api_logs()])
     message = f"{msg}\nInformation about errors: ```{logs}```"
     payload = {
         "channel": f"#{SLACK_CHANNEL}",
@@ -42,18 +41,16 @@ def slack(msg, kind):
         logger.error(f"Fail notification: {res.text}")
 
 
-def api_logs(kind):
-    try:
-        if kind == 'very bad':
-            log_error = requests.get(url=f"{HOST}/api/logs/error?file={FILE}&nlines={N_LINES}").json()
-            log_info = requests.get(url=f"{HOST}/api/logs/info?file={FILE_WATCHER}&nlines=6").json()
-            return [log_info, log_error]
-        else:
-            return [requests.get(url=f"{HOST}{endpoint}?file={FILE}&nlines={N_LINES}").json()
-                    for endpoint in ENDPOINTS]
-
-    except requests.exceptions.RequestException as re:
-        logger.error(f"API LOGS FAILED: see trace errors: {re}")
+def api_logs():
+    log_error = requests.get(url=f"{HOST}/api/logs/error?file={FILE}&nlines={N_LINES}")
+    log_info = requests.get(url=f"{HOST}/api/logs/info?file={FILE_WATCHER}&nlines=6")
+    log_error.raise_for_status()
+    log_info.raise_for_status()
+    logs = [log_info.json(), log_error.json()]
+    if logs:
+        return logs
+    else:
+        return []
 
 
 def notify(hits, kind):
@@ -70,8 +67,7 @@ def notify(hits, kind):
     for channel in NOTIFICATION_CHANNELS:
         try:
             func = switcher.get(channel)
-            if kind == "bad" or kind == "very bad" or ACTIVATE_ALARM_GOOD:
+            if kind == "very bad":
                 func(msg, kind)
-        except TypeError as te:
-            logger.error(f"Invalid notification channel: {channel}: {te}")
-            sys.exit(1)
+        except requests.exceptions.RequestException as re:
+            logger.error(f"API LOGS FAILED: see trace errors: {re}")
